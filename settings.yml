@@ -1,0 +1,24 @@
+# Discourse's theme-settings validator (lib/theme_settings_validator.rb) has
+# no field-level regex for a plain `string` setting — only `enum` choices,
+# numeric/string-length `min`/`max`, and a JSON Schema for the `objects`
+# type. So `domain` and `api` below cannot be rejected at save time the way
+# the Drupal, Joomla and TYPO3 integrations reject a mistyped one in their own
+# settings forms. They are plain strings here; an invalid `domain` is instead
+# caught and dropped at render time — see `resolveDomain` in
+# javascripts/discourse/lib/tag-config.js.
+
+domain:
+  type: string
+  default: ""
+
+companion:
+  type: bool
+  default: false
+
+track_admin:
+  type: bool
+  default: false
+
+api:
+  type: string
+  default: ""

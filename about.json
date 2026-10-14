@@ -1,0 +1,8 @@
+{
+  "name": "Pulse Analytics",
+  "component": true,
+  "authors": "Ciphera BV",
+  "about_url": "https://docs.ciphera.net/pulse/framework-guides",
+  "license_url": "https://github.com/ciphera-net/pulse-discourse/blob/main/LICENSE",
+  "minimum_discourse_version": "3.3.0"
+}

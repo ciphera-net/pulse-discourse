@@ -1,0 +1,8 @@
+en:
+  theme_metadata:
+    description: "Pulse Analytics (https://pulse.ciphera.net): adds privacy-first web analytics to this forum. No cookies, no personal data stored, and the script it adds to your pages is under 3 KB."
+    settings:
+      domain: "The domain this forum is registered under in Pulse Analytics, for example example.com. Leave empty to let the tracker use the browser's own hostname, which is correct for a forum served on one domain."
+      companion: "Also record clicks, copies and form submits. Loads a second, separate script — see the README."
+      track_admin: "Also send tracking from the /admin section. Off by default: administration pages are not the forum's audience, and counting them inflates every number on the dashboard."
+      api: "Route events through your own proxy origin, for example https://example.com. A bare origin, not a full URL — the tracker appends its own path. Leave empty unless you have set a proxy up."
