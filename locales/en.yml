@@ -1,6 +1,6 @@
 en:
   theme_metadata:
-    description: "Pulse Analytics (https://pulse.ciphera.net): adds privacy-first web analytics to this forum. No cookies, no personal data stored, and the script it adds to your pages is under 3 KB."
+    description: "Pulse Analytics (https://pulse.ciphera.net): adds privacy-first web analytics to this forum. No cookies, no IP addresses stored, and the script it adds to your pages is under 3 KB."
     settings:
       domain: "The domain this forum is registered under in Pulse Analytics, for example example.com. Leave empty to let the tracker use the browser's own hostname, which is correct for a forum served on one domain."
       companion: "Also record clicks, copies and form submits. Loads a second, separate script — see the README."
