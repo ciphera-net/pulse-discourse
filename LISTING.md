@@ -29,12 +29,12 @@ a plain product-name title — not "Discourse theme component for X".)
 
 ## Short description (shown in the topic list / link previews)
 
-> Privacy-first web analytics for your forum. No cookies, no personal data, and the script it adds to your pages is under 3 KB.
+> Privacy-first web analytics for your forum. No cookies, no IP addresses stored, and the script it adds to your pages is under 3 KB.
 
 ## Body
 
 Pulse Analytics adds privacy-first web analytics to a Discourse forum with one
-theme component. It sets no cookies, stores no personal data, and the script
+theme component. It sets no cookies, never stores IP addresses, and the script
 it adds to your pages is under 3 KB.
 
 **Install**
