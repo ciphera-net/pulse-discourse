@@ -8,9 +8,8 @@ approved (see `RELEASING.md`). This file is that topic's copy, kept in
 version control the way the Joomla and TYPO3 integrations keep theirs, rather
 than living only as a forum post nobody can diff.
 
-**Status:** not yet posted. Blocked on a meta.discourse.org account for
-Ciphera and the `@theme_authors` membership request — see `RELEASING.md`
-steps 1–2.
+**Status:** not yet posted. Posting the topic first needs a meta.discourse.org
+account for Ciphera and `@theme_authors` membership (`RELEASING.md` step 2).
 
 ## Title
 
@@ -29,50 +28,39 @@ a plain product-name title — not "Discourse theme component for X".)
 
 ## Short description (shown in the topic list / link previews)
 
-> Privacy-first web analytics for your forum. No cookies, no IP addresses stored, and the script it adds to your pages is under 3 KB.
+> Pulse Analytics counts visitors on your forum without cookies or stored IP addresses. The script this component adds to your pages is under 3 KB.
 
 ## Body
 
-Pulse Analytics adds privacy-first web analytics to a Discourse forum with one
-theme component. It sets no cookies, never stores IP addresses, and the script
-it adds to your pages is under 3 KB.
+Pulse Analytics adds privacy-first web analytics to a Discourse forum with one theme component. It sets no cookies and never stores IP addresses. The script it adds to your pages is under 3 KB.
 
 **Install**
 
-1. **Admin → Customize → Themes → Components → Install → From a git
-   repository**, and paste this repository's URL.
+1. Go to **Admin → Customize → Themes → Components → Install → From a git repository** and paste this repository's URL.
 2. Add the component to your theme.
-3. Open its settings and set **Domain** to the domain your forum is
-   registered under in Pulse — or leave it empty and the tracker uses the
-   browser's own hostname, correct for a forum served on one domain.
-4. Visit [pulse.ciphera.net](https://pulse.ciphera.net) and watch visitors
-   arrive.
+3. Open its settings and set **Domain** to the domain your forum is registered under in Pulse. If you leave it empty, the tracker uses the browser's own hostname, which is right for a forum served on one domain.
+4. Visit [pulse.ciphera.net](https://pulse.ciphera.net) and watch visitors arrive.
 
 **Settings**
 
 | Setting | Default | What it does |
 |---|---|---|
-| Domain | empty | The domain this forum is registered under in Pulse. Empty means auto-detect. |
-| Record clicks, copies and form submits | off | Loads a second, separate script for interaction capture. |
-| Also track administration pages | off | Off by default — see the README for exactly how this is enforced on a single-page app. |
-| Custom API origin | empty | Route events through your own proxy origin. |
+| Domain | empty | The domain this forum is registered under in Pulse. If it is empty, the tracker uses the browser's own hostname. |
+| Record clicks, copies and form submits | off | Loads a second, separate script that records interactions. |
+| Also track administration pages | off | Tracks administration pages too. They are excluded by default; the README explains how that is enforced on a single-page app. |
+| Custom API origin | empty | Sends events through your own proxy origin. |
 
 **What it measures**
 
-Pageviews, referrers, countries, devices, time on page and scroll depth, plus
-the goals, funnels and campaigns you set up, in one dashboard hosted in
-Europe. Visitors whose browser sends Do Not Track or Global Privacy Control
-are not counted at all. Administration pages are excluded by default.
+Pulse counts pageviews, referrers, countries, devices, time on page and scroll depth, plus the goals, funnels and campaigns you set up, in one dashboard hosted in Europe. It does not count visitors whose browser sends Do Not Track or Global Privacy Control. The component excludes administration pages by default.
 
 **You need**
 
-Discourse 3.3 or later, and a Pulse Analytics account with a site registered
-for the same domain. The free plan is enough to start.
+Discourse 3.3 or later, and a Pulse Analytics account with a site registered for the same domain. The free plan is enough to start.
 
 **Source**
 
-[`github.com/ciphera-net/pulse-discourse`](https://github.com/ciphera-net/pulse-discourse) ·
-docs at [docs.ciphera.net/pulse](https://docs.ciphera.net/pulse)
+[`github.com/ciphera-net/pulse-discourse`](https://github.com/ciphera-net/pulse-discourse) · docs at [docs.ciphera.net/pulse](https://docs.ciphera.net/pulse)
 
 ## Logo
 
