@@ -1,0 +1,39 @@
+# Runs on pull_request AND on push to main.
+#
+# A workflow that only runs on pull requests checks the proposal and never the
+# branch that ships, so this one runs on both.
+#
+# What this covers: the unit tests for the tag logic in
+# javascripts/discourse/lib/tag-config.js, run with Node's built-in test runner.
+# There are no dependencies, so there is no install step.
+#
+# What this does NOT cover: the system spec in spec/system, which needs a real
+# Discourse with a browser, and the theme files themselves (about.json,
+# settings.yml, locales). scripts/verify.sh runs that spec before a release.
+when:
+  - event: pull_request
+  - event: push
+    branch: main
+
+labels:
+  runner: k8s
+
+steps:
+  - name: test
+    image: registry.ops.ciphera.net/mirror/docker.io/library/node:22-94c973596a85@sha256:94c973596a8581a87ba42746ceb0b0e0b5246d098de45b1ce04dcc967cfc5dfb
+    backend_options:
+      kubernetes:
+        resources:
+          requests: { memory: 128Mi, cpu: 100m }
+          limits: { memory: 512Mi }
+    commands:
+      - node --version
+      # One run writes the TAP log, then the count is asserted. A run that
+      # collects no tests exits 0, so the count is checked and not trusted. It is
+      # a floor, not an equality: adding tests must never redden the build.
+      - |
+        node --test --test-reporter=tap > /tmp/node-test.tap || { cat /tmp/node-test.tap; exit 1; }
+        cat /tmp/node-test.tap
+        COUNT=$(grep -E '^# tests ' /tmp/node-test.tap | awk '{print $3}')
+        echo "node:test collected $COUNT test(s)"
+        [ "$COUNT" -ge 12 ] || { echo "REFUSING: expected at least 12 tests, collected $COUNT. The suite shrank or stopped being collected."; exit 1; }

@@ -1,0 +1,82 @@
+# Continuous security scanning: gitleaks, trufflehog and Opengrep, all self-hosted, from one image built and
+# self-tested in ciphera-net/ci-images (ci-security:v1). Each tool is a step running `ciphera-scan <tool>`.
+#
+# WHAT IS SCANNED (since 08-11-2026). A pull request scans only the files it changes (Woodpecker's CI_PIPELINE_FILES),
+# copied with their paths, so the allowlist and the finding paths read as in a whole-tree scan. Every push to main
+# scans the whole tree, so a finding in a file no pull request touched is still caught there (an admin can push to
+# main directly), and so does the `nightly` cron, which re-checks main with the image's current rules when nothing
+# was pushed. A pull request scans the whole tree too when it changes more than 500 files or a scanner's own
+# configuration (.gitleaks.toml, .gitleaksignore, .semgrepignore, this file).
+#
+# WHY A SEPARATE WORKFLOW FILE (not a step in test.yml / unit.yml): the k8s runner's per-pipeline
+# workspace PVC is ReadWriteOnce (Exoscale has no RWX filesystem), so steps of ONE workflow
+# serialize on that volume. A separate workflow gets its OWN workspace and runs IN PARALLEL with
+# build/unit/integration. Own GitHub check.
+#
+# 🔒 ONLY gitleaks GATES. gitleaks (--exit-code 1, .gitleaks.toml allowlists test fixtures) is the
+# ONE step that can red the `security` check: a secret outside the allowlisted paths fails it.
+# trufflehog and Opengrep are `failure: ignore`, so a finding OR a transient error in them never
+# blocks a merge; their results are in this workflow's log. That is what makes `security` safe to
+# REQUIRE in branch protection: merge is blocked iff a real secret is present.
+#
+# Nothing posts to the PR. The Aegis summary comment and the reviewdog review steps were removed on
+# 02-11-2026: every new comment or review emailed the PR's author, and the summary's counts covered
+# the whole repository, not the diff. Every
+# version is pinned in the image, and no scanner makes a network call (trufflehog verification OFF;
+# Opengrep's binary and rules are in the image).
+labels:
+  runner: k8s
+
+when:
+  - event: push
+    branch: [main]
+  - event: pull_request
+  # The whole tree every night (cron `nightly`), with the image's current rules.
+  - event: cron
+    cron: nightly
+
+steps:
+  # --- SECRETS, GATING: regex/entropy, no network. Scans the WORKING TREE (`dir`), not git history (on a pull
+  # request, the files it changes). The repo's .gitleaks.toml (default rules + test-path allowlist), --exit-code 1
+  # => a secret in non-test code fails this step and reds the check. --redact keeps raw secrets out of the log.
+  gitleaks:
+    image: registry.ops.ciphera.net/ciphera-net/ci-security:v1
+    pull: true
+    backend_options:
+      kubernetes:
+        resources:
+          requests: { memory: 256Mi, cpu: 100m }
+          limits: { memory: 512Mi }
+    commands:
+      - ciphera-scan gitleaks
+
+  # --- SECRETS, ADVISORY: verified-credential detector run UNVERIFIED (--no-verification, no outbound
+  # calls). failure:ignore — a finding or an error never blocks. Its own "finished scanning" log line
+  # carries the verified/unverified counts; the findings themselves (raw values) go to /dev/null, so
+  # no candidate secret ever reaches the log.
+  trufflehog:
+    image: registry.ops.ciphera.net/ciphera-net/ci-security:v1
+    pull: true
+    failure: ignore
+    backend_options:
+      kubernetes:
+        resources:
+          requests: { memory: 256Mi, cpu: 100m }
+          limits: { memory: 1Gi }
+    commands:
+      - ciphera-scan trufflehog
+
+  # --- SAST, ADVISORY: Opengrep (LGPL OSS fork of semgrep), binary and rules pinned in the image.
+  # failure:ignore — findings never block. Findings and the "Ran N rules on M files: K findings"
+  # summary print to this log.
+  opengrep:
+    image: registry.ops.ciphera.net/ciphera-net/ci-security:v1
+    pull: true
+    failure: ignore
+    backend_options:
+      kubernetes:
+        resources:
+          requests: { memory: 1Gi, cpu: 500m }
+          limits: { memory: 2Gi }
+    commands:
+      - ciphera-scan opengrep javascript generic
