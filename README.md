@@ -5,7 +5,7 @@ Analytics sets no cookies and never stores IP addresses, and the script it adds
 to your pages is under 3 KB.
 
 [Pulse Analytics](https://pulse.ciphera.net) is built by
-[Ciphera](https://ciphera.net), a company in Belgium, and hosted in Europe.
+[Ciphera](https://ciphera.net), a company in Belgium, and hosted in Switzerland.
 
 ## Requirements
 
