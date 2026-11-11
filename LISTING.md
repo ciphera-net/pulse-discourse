@@ -52,11 +52,11 @@ Pulse Analytics adds privacy-first web analytics to a Discourse forum with one t
 
 **What it measures**
 
-Pulse counts pageviews, referrers, countries, devices, time on page and scroll depth, plus the goals, funnels and campaigns you set up, in one dashboard hosted in Europe. It does not count visitors whose browser sends Do Not Track or Global Privacy Control. The component excludes administration pages by default.
+Pulse counts pageviews, referrers, countries, devices, time on page and scroll depth, plus the goals, funnels and campaigns you set up, in one dashboard hosted in Switzerland. It does not count visitors whose browser sends Do Not Track or Global Privacy Control. The component excludes administration pages by default.
 
-**You need**
+**Requirements**
 
-Discourse 3.3 or later, and a Pulse Analytics account with a site registered for the same domain. The free plan is enough to start.
+You need Discourse 3.3 or later and a Pulse Analytics account with a site registered for the same domain. The free plan is enough to start.
 
 **Source**
 
