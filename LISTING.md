@@ -28,11 +28,11 @@ a plain product-name title — not "Discourse theme component for X".)
 
 ## Short description (shown in the topic list / link previews)
 
-> Pulse Analytics counts visitors on your forum without cookies or stored IP addresses. The script this component adds to your pages is under 3 KB.
+> Pulse Analytics counts visitors on your forum without cookies or stored IP addresses. The script is about 3 KB.
 
 ## Body
 
-Pulse Analytics adds privacy-first web analytics to a Discourse forum with one theme component. It sets no cookies and never stores IP addresses. The script it adds to your pages is under 3 KB.
+Pulse Analytics adds privacy-first web analytics to a Discourse forum with one theme component. It sets no cookies and never stores IP addresses. The script is about 3 KB.
 
 **Install**
 
@@ -46,9 +46,10 @@ Pulse Analytics adds privacy-first web analytics to a Discourse forum with one t
 | Setting | Default | What it does |
 |---|---|---|
 | Domain | empty | The domain this forum is registered under in Pulse. If it is empty, the tracker uses the browser's own hostname. |
-| Record clicks, copies and form submits | off | Loads a second, separate script that records interactions. |
 | Also track administration pages | off | Tracks administration pages too. They are excluded by default; the README explains how that is enforced on a single-page app. |
 | Custom API origin | empty | Sends events through your own proxy origin. |
+
+Scroll depth, outbound links, file downloads, and clicks, copies and form submits are each switched on or off in your site's settings in Pulse (Settings > General). The tag stays the same, so there is nothing to change here.
 
 **What it measures**
 

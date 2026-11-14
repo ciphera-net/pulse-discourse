@@ -1,6 +1,5 @@
 import { apiInitializer } from "discourse/lib/api";
 import {
-  COMPANION_URL,
   DEFAULT_API_ORIGIN,
   SCRIPT_URL,
   matchesOrigin,
@@ -35,8 +34,8 @@ export default apiInitializer((api) => {
   // exposed "pause" it reads before each one.
   //
   // So the gate sits one level down, at the network call: every outbound
-  // request the Pulse tracker makes — pageviews, engagement beacons, the
-  // companion script's interaction events — goes through `fetch` or
+  // request the Pulse tracker makes — pageviews, engagement beacons and
+  // interaction events — goes through `fetch` or
   // `navigator.sendBeacon` to this one API origin. Wrapping those two,
   // scoped to that origin only, drops Pulse's traffic on an admin page and
   // resumes it the moment the visitor navigates back out — in the same
@@ -128,14 +127,8 @@ export default apiInitializer((api) => {
     }
     document.head.appendChild(tracker);
 
-    // No data-domain and no data-api on the companion: the tracker resolves
-    // both once, from the core script, and a second copy of either is a
-    // second thing to keep in step. A second, separate request on purpose —
-    // the core script's size is a published claim, and nothing is folded
-    // into it to make this feature look free.
-    if (settings.companion) {
-      document.head.appendChild(buildScript(COMPANION_URL));
-    }
+    // One tag is all this component adds. The tracker loads its interactions
+    // script by itself when the site's settings in Pulse turn it on.
   }
 
   // `onPageChange` fires on the initial page load and again on every in-app

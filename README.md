@@ -1,8 +1,8 @@
 # Pulse Analytics for Discourse
 
 This theme component adds privacy-first analytics to a Discourse forum. Pulse
-Analytics sets no cookies and never stores IP addresses, and the script it adds
-to your pages is under 3 KB.
+Analytics sets no cookies and never stores IP addresses, and the script is
+about 3 KB.
 
 [Pulse Analytics](https://pulse.ciphera.net) is built by
 [Ciphera](https://ciphera.net), a company in Belgium, and hosted in Switzerland.
@@ -34,9 +34,16 @@ browser's own hostname, which is correct for a forum served on one domain.
 | Setting | Default | What it does |
 |---|---|---|
 | `domain` | empty | The domain this forum is registered under in Pulse. Empty means auto-detect. |
-| `companion` | off | Record clicks, copies and form submits. Loads a second, separate script (see below). |
 | `track_admin` | off | Also send tracking from the `/admin` section. |
 | `api` | empty | Route events through your own proxy origin. Enter the origin only, without a path. |
+
+Scroll depth, outbound links, file downloads, and clicks, copies and form
+submits are each switched on or off in your site's settings in Pulse
+(Settings → General). The tag stays the same, so there is nothing to change
+here.
+
+The `companion` setting is gone. A value stored for it is ignored, so a forum
+that had it switched on needs no change.
 
 ## How the tag is emitted, and why it is not a static `head_tag.html`
 
@@ -112,7 +119,7 @@ checks before each one, so this component cannot reach in and stop an
 individual admin pageview after the fact.
 
 So the gate sits one level down, at the network call. Every request the Pulse
-tracker and its companion script make (pageviews, engagement beacons and
+tracker makes (pageviews, engagement beacons and
 interaction events) goes through `fetch` or `navigator.sendBeacon` to one
 API origin. With `track_admin` off, this component wraps both, scoped to that
 origin only, and drops the request whenever the current path is under
@@ -136,12 +143,6 @@ choices, numeric/string-length `min`/`max`, and a JSON Schema for the
 `objects` type. It has no field-level regex for a plain `string` setting. This
 is a limitation of the platform. The net effect is the same: the component
 drops the value at runtime, so a broken tag is never produced.
-
-## The interaction capture is a second request on purpose
-
-`companion` loads `script.interactions.js`, a second, separate script. The
-core script's size is a published claim, and nothing is folded into it to
-make this feature look free.
 
 ## What Pulse Analytics measures
 

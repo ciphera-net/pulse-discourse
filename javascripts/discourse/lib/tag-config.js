@@ -18,9 +18,6 @@
 // The Pulse tracker.
 export const SCRIPT_URL = "https://js.ciphera.net/script.js";
 
-// The companion script: clicks, copies and form submits.
-export const COMPANION_URL = "https://js.ciphera.net/script.interactions.js";
-
 // Where the tracker sends events by default, absent a custom `api` origin.
 export const DEFAULT_API_ORIGIN = "https://pulse-api.ciphera.net";
 
