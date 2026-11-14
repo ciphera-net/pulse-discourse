@@ -159,9 +159,10 @@ if [ "$IS_RUNNING" -eq 0 ] || [ "$REBUILD" -eq 1 ]; then
   # the moment node_modules match the checked-out ref (14-10-2026). The image
   # ships node_modules for whatever ref IT was built against, not
   # $DISCOURSE_CHECKOUT_REF, so this reinstall is required on every ref that
-  # differs from the image's own default.
+  # differs from the image's own default. CI=true lets pnpm replace the image's node_modules without asking:
+  # with no TTY it otherwise stops with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY (measured 14-11-2026).
   echo "==> installing JS dependencies for this ref (pnpm install)"
-  docker exec -u discourse:discourse "$CONTAINER" pnpm install \
+  docker exec -e CI=true -u discourse:discourse "$CONTAINER" pnpm install \
     || { echo "REFUSING: pnpm install failed"; exit 1; }
 
   # `docker:test:setup` doesn't fetch the Playwright browser binary either,

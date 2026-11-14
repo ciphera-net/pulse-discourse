@@ -11,10 +11,6 @@ domain:
   type: string
   default: ""
 
-companion:
-  type: bool
-  default: false
-
 track_admin:
   type: bool
   default: false

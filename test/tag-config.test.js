@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
-  COMPANION_URL,
   DEFAULT_API_ORIGIN,
   SCRIPT_URL,
   isAdminPath,
@@ -15,7 +14,6 @@ import {
 
 test("the published URLs are exactly what they must be", () => {
   assert.equal(SCRIPT_URL, "https://js.ciphera.net/script.js");
-  assert.equal(COMPANION_URL, "https://js.ciphera.net/script.interactions.js");
   assert.equal(DEFAULT_API_ORIGIN, "https://pulse-api.ciphera.net");
 });
 

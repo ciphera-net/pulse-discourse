@@ -26,7 +26,7 @@
 # ---------------------------------------------------------------------------
 # An earlier version of this spec called `upload_theme_or_component` once in
 # a `before` hook, then used `Theme#update_setting` + `theme.save!` inside
-# each example to configure domain/companion/track_admin/api — the pattern
+# each example to configure domain/track_admin/api — the pattern
 # Discourse's own helper doc comment recommends ("a spec can reconfigure the
 # component between examples without going through the admin UI") and the
 # same call the real admin endpoint (`Admin::ThemesController#update_single_setting`)
@@ -53,8 +53,8 @@
 # `visit`. None of it closed the gap. Given `Admin::ThemesController#update_single_setting`
 # calls the exact same `Theme#update_setting` + `theme.save` this spec did,
 # this is a system-spec-thread artifact, not a production bug — but it is
-# real here, and it would have made "drops an invalid domain" and "loads the
-# companion script…" pass VACUOUSLY (both only ever observed the untouched
+# real here, and it would have made "drops an invalid domain" and "adds exactly one
+# Pulse script…" pass VACUOUSLY (both only ever observed the untouched
 # `""` default, which also produces no `data-domain` on its own, proving
 # nothing about `resolveDomain`'s actual string-sanitising behaviour).
 #
@@ -69,7 +69,7 @@
 # produced `data-domain="example.com"` on the live page every time.
 
 CIPHERA_SCRIPT_SELECTOR = "script[src='https://js.ciphera.net/script.js']"
-CIPHERA_COMPANION_SELECTOR = "script[src='https://js.ciphera.net/script.interactions.js']"
+CIPHERA_INTERACTIONS_SELECTOR = "script[src='https://js.ciphera.net/script.interactions.js']"
 ANY_CIPHERA_SELECTOR = "script[src*='js.ciphera.net']"
 
 # This spec file's own path is `<theme root>/spec/system/pulse_analytics_spec.rb`,
@@ -87,7 +87,7 @@ SETTINGS_YML_PATH = File.expand_path("../../settings.yml", __dir__)
 # reaches the live page in this harness. Restoring in `ensure` (not an
 # `after` hook) means the next example's own call always starts from the
 # real on-disk file regardless of how this example ends.
-def upload_with_settings!(domain: "", companion: false, track_admin: false, api: "")
+def upload_with_settings!(domain: "", track_admin: false, api: "")
   original = File.read(SETTINGS_YML_PATH)
   File.write(
     SETTINGS_YML_PATH,
@@ -95,10 +95,6 @@ def upload_with_settings!(domain: "", companion: false, track_admin: false, api:
       "domain" => {
         "type" => "string",
         "default" => domain,
-      },
-      "companion" => {
-        "type" => "bool",
-        "default" => companion,
       },
       "track_admin" => {
         "type" => "bool",
@@ -149,7 +145,7 @@ RSpec.describe "Pulse Analytics tag", type: :system do
     expect(tag[:defer]).to eq(true)
     expect(tag[:"data-domain"]).to eq("example.com")
     expect(tag[:"data-api"]).to be_nil
-    expect(page).to have_no_css(CIPHERA_COMPANION_SELECTOR, visible: :all)
+    expect(page).to have_no_css(CIPHERA_INTERACTIONS_SELECTOR, visible: :all)
   end
 
   it "omits data-domain when the domain setting is empty, instead of a broken attribute" do
@@ -187,18 +183,20 @@ RSpec.describe "Pulse Analytics tag", type: :system do
     expect(tag_outer_html).not_to include("pulsePwned")
   end
 
-  it "loads the companion script, carrying no domain or api of its own, only when enabled" do
-    upload_with_settings!(domain: "example.com", companion: true, api: "https://proxy.example.com")
+  it "adds exactly one Pulse script, carrying data-api when set, and never the interactions script" do
+    upload_with_settings!(domain: "example.com", api: "https://proxy.example.com")
 
     visit "/"
 
-    expect(page).to have_css(CIPHERA_COMPANION_SELECTOR, visible: :all)
-    companion = find(CIPHERA_COMPANION_SELECTOR, visible: :all)
-    expect(companion[:"data-domain"]).to be_nil
-    expect(companion[:"data-api"]).to be_nil
+    expect(page).to have_css(CIPHERA_SCRIPT_SELECTOR, visible: :all)
+    expect(page).to have_css(ANY_CIPHERA_SELECTOR, visible: :all, count: 1)
+    expect(page).to have_no_css(CIPHERA_INTERACTIONS_SELECTOR, visible: :all)
 
     core = find(CIPHERA_SCRIPT_SELECTOR, visible: :all)
     expect(core[:"data-api"]).to eq("https://proxy.example.com")
+    %w[no-scroll no-outbound no-downloads ignore-dnt ignore-gpc].each do |flag|
+      expect(core[:"data-#{flag}"]).to be_nil
+    end
   end
 
   it "sends no Pulse traffic at all on an admin page when track_admin is off (the default)" do
